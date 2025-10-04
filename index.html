@@ -26,6 +26,7 @@
 <div class="wrap">
   <div class="hdr"><div class="logo">Keystone Kash • PayPal</div>
   <div class="note">After PayPal checkout you’ll receive your license and download link.</div></div>
+<div id="signals" class="note" style="margin:12px 24px"></div>
   <div class="grid" id="products"></div>
   <div class="note" style="margin-top:16px">Support: <a href="mailto:kalihatreese@gmail.com">kalihatreese@gmail.com</a></div>
 </div>
@@ -34,6 +35,7 @@
 <script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&currency=USD&components=buttons"></script>
 <script>
 const CATALOG = [
+  {sku:"AUTOTREND-BOT", name:"Keystone Autotrend Bot", price:19900, currency:"USD", desc:"Auto trend scanning + signals."},
   {sku:"OVERLORD-SNIPER", name:"Overlord Sniper Vault", price:24900, currency:"USD", desc:"Live MEV bot, code, license, updates."},
   {sku:"OVERLORD-SCHOOL-1", name:"Overlord School Module 1", price:9900, currency:"USD", desc:"MEV education, setup, walkthroughs."},
   {sku:"FULL-BUNDLE", name:"Full Bundle Vault", price:49900, currency:"USD", desc:"All vaults + priority updates + support."},
@@ -90,3 +92,14 @@ CATALOG.forEach(renderProduct);
 </script>
 </body>
 </html>
+<script>
+async function loadSignals(){
+  try{
+    const r = await fetch("signals.json?_=" + Date.now());
+    const j = await r.json();
+    const text = (j.items||[]).map(x=>`[${x.s}] ${x.t}`).join(" • ");
+    const el = document.getElementById("signals"); if(el) el.textContent = "Live Signals: " + text;
+  }catch(e){}
+}
+loadSignals(); setInterval(loadSignals, 60000);
+</script>
