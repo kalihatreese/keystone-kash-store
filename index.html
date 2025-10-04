@@ -63,3 +63,20 @@
     }
   }).render('#paypal-subscribe-button');
 </script>
+<!-- Autotrend Bot Subscription -->
+<h2>Autotrend Vault Bot • Monthly Subscription</h2>
+<p>Automated AI-powered trend following bot. Includes updates + support.</p>
+<div id="paypal-subscribe-button"></div>
+<script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&vault=true&intent=subscription"></script>
+<script>
+  paypal.Buttons({
+    createSubscription: function(data, actions) {
+      return actions.subscription.create({
+        'plan_id': 'P-XXXXXXXXXXXX' // replace with your PayPal subscription plan ID
+      });
+    },
+    onApprove: function(data, actions) {
+      alert('✅ Subscribed! Autotrend Vault activated: ' + data.subscriptionID);
+    }
+  }).render('#paypal-subscribe-button');
+</script>
