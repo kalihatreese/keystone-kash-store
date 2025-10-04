@@ -3,16 +3,90 @@
 <head>
   <meta charset="utf-8"/>
   <title>Keystone Kash Store</title>
+  <style>
+    :root{--bg:#0b0f14;--fg:#e8eef6;--card:#121822;--muted:#93a4b7}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .card{background:var(--card);border-radius:16px;padding:18px;border:1px solid #1f2733}
+    .h{font-size:22px;margin:0 0 6px}
+    .p{color:var(--muted);margin:6px 0 12px;font-size:14px;line-height:1.4}
+    .price{font-weight:700;margin:8px 0 12px}
+    .row{display:flex;gap:10px;align-items:center;margin:8px 0}
+    input[type=email]{flex:1;background:#0e141c;border:1px solid #263041;color:var(--fg);padding:10px;border-radius:10px;outline:none}
+    .note{color:var(--muted);font-size:12px}
+    .ok{color:#90ee90}
+    .err{color:#ff8c8c}
+    .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    a{color:#9ecbff}
+  </style>
 </head>
 <body>
-  <h1>Keystone Kash • Checkout</h1>
+<div class="wrap">
+  <div class="hdr"><div class="logo">Keystone Kash • PayPal</div>
+  <div class="note">After PayPal checkout you’ll receive your license and download link.</div></div>
+  <div class="grid" id="products"></div>
+  <div class="note" style="margin-top:16px">Support: <a href="mailto:kalihatreese@gmail.com">kalihatreese@gmail.com</a></div>
+</div>
 
-  <!-- PayPal SDK with Live Client ID -->
-  <script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mSTclient-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&currency=USD&components=buttons"></script>             currency=USDclient-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&currency=USD&components=buttons"></script>             components=buttons"></script>
-  
-  <div id="paypal-button-container"></div>
-  <script>
-    paypal.Buttons().render('#paypal-button-container');
-  </script>
+<!-- PayPal SDK Live -->
+<script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&currency=USD&components=buttons"></script>
+<script>
+const CATALOG = [
+  {sku:"OVERLORD-SNIPER", name:"Overlord Sniper Vault", price:24900, currency:"USD", desc:"Live MEV bot, code, license, updates."},
+  {sku:"OVERLORD-SCHOOL-1", name:"Overlord School Module 1", price:9900, currency:"USD", desc:"MEV education, setup, walkthroughs."},
+  {sku:"FULL-BUNDLE", name:"Full Bundle Vault", price:49900, currency:"USD", desc:"All vaults + priority updates + support."},
+  {sku:"ASHLEYANA", name:"Ashleyana SaaS License", price:199999, currency:"USD", desc:"API access + production keys."},
+  {sku:"KEYSTONE-FOUNDRY", name:"Keystone Foundry (KSFoundry)", price:29900, currency:"USD", desc:"AI/ML app scaffolder + deploy presets."}
+];
+function downloadLink(sku){
+  return `https://github.com/kalihatreese/keystone-vaults/releases/latest/download/${encodeURIComponent(sku.toLowerCase())}.zip`;
+}
+async function sha256Hex(s){
+  const buf = new TextEncoder().encode(s);
+  const hash = await crypto.subtle.digest("SHA-256", buf);
+  return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function genKey(sku, orderId, email){
+  const salt="PUBLIC-SALT-CHANGE";
+  const hex=(await sha256Hex(`${sku}:${orderId}:${email}:${salt}`)).toUpperCase();
+  return `${sku}-${hex.slice(0,32).match(/.{1,4}/g).join("-")}`;
+}
+const $grid=document.getElementById('products');
+function renderProduct(p){
+  const el=document.createElement('div'); el.className='card';
+  el.innerHTML=`
+    <h3 class="h">${p.name}</h3>
+    <p class="p">${p.desc}</p>
+    <div class="price">$${(p.price/100).toFixed(2)} ${p.currency}</div>
+    <div class="row"><input type="email" placeholder="email for receipt (optional)" id="email_${p.sku}"></div>
+    <div id="pp_${p.sku}"></div><div class="note" id="note_${p.sku}"></div>`;
+  $grid.appendChild(el);
+  paypal.Buttons({
+    style:{ layout:'vertical', shape:'pill', label:'buynow', height:45 },
+    createOrder: (_, actions)=>{
+      return actions.order.create({
+        purchase_units:[{ amount:{ currency_code:p.currency, value:(p.price/100).toFixed(2) }, description:`${p.sku} • ${p.name}`, custom_id:p.sku }],
+        application_context:{ shipping_preference:'NO_SHIPPING' }
+      });
+    },
+    onApprove: async (_, actions)=>{
+      const details=await actions.order.capture();
+      const email=document.getElementById('email_'+p.sku).value.trim() || (details.payer?.email_address||"");
+      const key=await genKey(p.sku, details.id, email);
+      const link=downloadLink(p.sku);
+      const n=document.getElementById('note_'+p.sku);
+      n.innerHTML=`<span class="ok">Paid.</span> License: <code>${key}</code><br/>Download: <a href="${link}">${link}</a><br/><small>Order ID: ${details.id}</small>`;
+      n.className="note ok";
+    },
+    onError:(err)=>{
+      const n=document.getElementById('note_'+p.sku);
+      n.textContent="PayPal error: "+err; n.className="note err";
+    }
+  }).render('#pp_'+p.sku);
+}
+CATALOG.forEach(renderProduct);
+</script>
 </body>
 </html>
