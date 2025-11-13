@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Keystone Kash Store</title>
+</head>
+<body>
+  <h1>Keystone Kash • Checkout</h1>
+
+  <!-- PayPal SDK with Keystone AI Checkout Live Client ID -->
+  <script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&currency=USD&components=buttons&disable-funding=card,bancontact,blik,eps,giropay,ideal,mercadopago,mybank,oxxo,p24,sofort,venmo"></script>
+  
+  <div id="paypal-button-container"></div>
+  <script>
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: '10.00' } // 💵 change price here
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('✅ Transaction completed by ' + details.payer.name.given_name);
+        });
+      }
+    }).render('#paypal-button-container');
+  </script>
+</body>
+</html>
+<!-- Autotrend Bot Subscription -->
+<h2>Autotrend Vault Bot • Monthly Subscription</h2>
+<p>Automated AI-powered trend following bot. Includes updates + support.</p>
+<div id="paypal-subscribe-button"></div>
+<script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&vault=true&intent=subscription"></script>
+<script>
+  paypal.Buttons({
+    createSubscription: function(data, actions) {
+      return actions.subscription.create({
+        'plan_id': 'P-XXXXXXXXXXXX' // replace with your PayPal subscription plan ID
+      });
+    },
+    onApprove: function(data, actions) {
+      alert('✅ Subscribed! Autotrend Vault activated: ' + data.subscriptionID);
+    }
+  }).render('#paypal-subscribe-button');
+</script>
+<!-- Autotrend Bot Subscription -->
+<h2>Autotrend Vault Bot • Monthly Subscription</h2>
+<p>Automated AI-powered trend following bot. Includes updates + support.</p>
+<div id="paypal-subscribe-button"></div>
+<script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&vault=true&intent=subscription"></script>
+<script>
+  paypal.Buttons({
+    createSubscription: function(data, actions) {
+      return actions.subscription.create({
+        'plan_id': 'P-XXXXXXXXXXXX' // replace with your PayPal subscription plan ID
+      });
+    },
+    onApprove: function(data, actions) {
+      alert('✅ Subscribed! Autotrend Vault activated: ' + data.subscriptionID);
+    }
+  }).render('#paypal-subscribe-button');
+</script>
+<!-- Autotrend Bot Subscription -->
+<h2>Autotrend Vault Bot • Monthly Subscription</h2>
+<p>Automated AI-powered trend following bot. Includes updates + support.</p>
+<div id="paypal-subscribe-button"></div>
+<script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&vault=true&intent=subscription"></script>
+<script>
+  paypal.Buttons({
+    createSubscription: function(data, actions) {
+      return actions.subscription.create({
+        'plan_id': 'P-XXXXXXXXXXXX' // replace with your PayPal subscription plan ID
+      });
+    },
+    onApprove: function(data, actions) {
+      alert('✅ Subscribed! Autotrend Vault activated: ' + data.subscriptionID);
+    }
+  }).render('#paypal-subscribe-button');
+</script>
+<!-- Autotrend Bot Subscription -->
+<h2>Autotrend Vault Bot • Monthly Subscription</h2>
+<p>Automated AI-powered trend following bot. Includes updates + support.</p>
+<div id="paypal-subscribe-button"></div>
+<script src="https://www.paypal.com/sdk/js?client-id=Af0wdaIxuAbVgcTGBgU195NJlwYwfBWS_RIx7IHjEmVNI9mfBOtFtzCaniUiPImPJL76UgryjcLs4mST&vault=true&intent=subscription"></script>
+<script>
+  paypal.Buttons({
+    createSubscription: function(data, actions) {
+      return actions.subscription.create({
+        'plan_id': 'P-XXXXXXXXXXXX' // replace with your PayPal subscription plan ID
+      });
+    },
+    onApprove: function(data, actions) {
+      alert('✅ Subscribed! Autotrend Vault activated: ' + data.subscriptionID);
+    }
+  }).render('#paypal-subscribe-button');
+</script>
